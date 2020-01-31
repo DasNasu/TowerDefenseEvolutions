@@ -17,6 +17,7 @@ import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 
 public class ShaderProgram {
 	private int programID;
@@ -41,7 +42,7 @@ public class ShaderProgram {
 		if(shaderID == 0) throw new Exception("Failed to create Shader");
 		glShaderSource(shaderID, shaderCode);
 		glCompileShader(shaderID);
-		if(glGetShaderi(shaderID, GL_COMPILE_STATUS) == 0) throw new Exception("Failed to compile Shader");
+		if(glGetShaderi(shaderID, GL_COMPILE_STATUS) == 0) throw new Exception("Failed to compile Shader\n"+glGetShaderInfoLog(shaderID, 1024));
 		glAttachShader(this.programID, shaderID);
 		return shaderID;
 	}

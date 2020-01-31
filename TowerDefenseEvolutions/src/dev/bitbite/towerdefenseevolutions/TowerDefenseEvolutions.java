@@ -16,10 +16,10 @@ public class TowerDefenseEvolutions {
 		TowerDefenseEvolutions.glWindow = new GLWindow(vsync, 1440, 800, "TowerDefense: Evolutions");
 		TowerDefenseEvolutions.inputHandler = new InputHandler();
 		TowerDefenseEvolutions.glWindow.createWindow();
-		/*this.windowThread = new Thread(TowerDefenseEvolutions.glWindow);
+		this.windowThread = new Thread(TowerDefenseEvolutions.glWindow);
 		this.inputThread = new Thread(TowerDefenseEvolutions.inputHandler);
 		this.windowThread.start();
-		this.inputThread.run();*/
+		this.inputThread.run();
 	}
 	
 	public static GLWindow getGLWindow() {
