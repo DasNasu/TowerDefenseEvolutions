@@ -1,6 +1,5 @@
 package dev.bitbite.towerdefenseevolutions;
 
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
@@ -18,10 +17,9 @@ import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class ShaderProgram {
-	private final int programID;
+	private int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
 	

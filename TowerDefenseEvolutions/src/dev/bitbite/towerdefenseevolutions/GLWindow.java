@@ -37,6 +37,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.nio.IntBuffer;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
@@ -72,17 +73,19 @@ public class GLWindow implements Runnable {
 			glfwSetWindowPos(this.window, (vidmode.width()-pWidth.get(0))/2, (vidmode.height()-pHeight.get(0))/2);
 		}
 		glfwMakeContextCurrent(this.window);
+		try {
+			this.shaderProgram = new ShaderProgram();
+			//this.shaderProgram.createVertexShader(Utils.loadResource("/shader/vertex.vs"));
+			//this.shaderProgram.createFragmentShader(Utils.loadResource("/shader/fragment.fs"));
+			//this.shaderProgram.link();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		glfwSwapInterval(this.vsync);
 		glfwShowWindow(this.window);
 		
-		/*try {
-			this.shaderProgram = new ShaderProgram();
-			this.shaderProgram.createVertexShader(Utils.loadResource("/shader/vertex.vs"));
-			this.shaderProgram.createFragmentShader(Utils.loadResource("/shader/fragment.fs"));
-			this.shaderProgram.link();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+		
 		
 		glfwSetKeyCallback(this.window, (window, key, scancode, action, mods) -> {
 			TowerDefenseEvolutions.getInputHandler().handleKeyboardInput(key);

@@ -15,7 +15,7 @@ public class InputHandler implements Runnable {
 		while(!glfwWindowShouldClose(TowerDefenseEvolutions.getGLWindow().getWindow())) {
 			glfwPollEvents();
 		}
-		//TowerDefenseEvolutions.getGLWindow().getShaderProgram().cleanup();
+		TowerDefenseEvolutions.getGLWindow().getShaderProgram().cleanup();
 	}
 	
 	public void handleKeyboardInput(int key) {
