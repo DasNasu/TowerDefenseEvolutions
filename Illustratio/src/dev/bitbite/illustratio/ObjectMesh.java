@@ -1,4 +1,4 @@
-package dev.bitbite.towerdefenseevolutions;
+package dev.bitbite.illustratio;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
@@ -56,7 +56,6 @@ public class ObjectMesh {
 			glBindBuffer(GL_ARRAY_BUFFER, this.colourVboID);
 			glBufferData(GL_ARRAY_BUFFER, colourBuffer, GL_STATIC_DRAW);
 			glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
-			
 			
 			glBindVertexArray(0);
 		} finally {

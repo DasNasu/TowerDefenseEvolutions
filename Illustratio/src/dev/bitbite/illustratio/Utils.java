@@ -1,4 +1,4 @@
-package dev.bitbite.towerdefenseevolutions;
+package dev.bitbite.illustratio;
 
 import java.io.BufferedReader;
 import java.io.IOException;

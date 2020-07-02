@@ -1,4 +1,4 @@
-package dev.bitbite.towerdefenseevolutions;
+package dev.bitbite.illustratio;
 
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
