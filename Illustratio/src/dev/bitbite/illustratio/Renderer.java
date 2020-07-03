@@ -12,38 +12,56 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
+import org.joml.Matrix4f;
+
 public class Renderer {
 	private static ShaderProgram shaderProgram;
 	private static GLWindow window;
-	
-
+	private static float fieldOfView;
+	private static float zNear;
+	private static float zFar;
+	private Transformation transformation;
 	private int vsync;
 	
-	public Renderer(int vsync, GLWindow window) {
+	public Renderer(int vsync, GLWindow window, float radiants, float zNear, float zFar) {
 		this.vsync = vsync;
 		Renderer.window = window;
+		Renderer.fieldOfView = (float) Math.toRadians(radiants);
+		Renderer.zNear = zNear;
+		Renderer.zFar = zFar;
+		this.transformation = new Transformation();
 		Renderer.window.createWindow();
 		try {
 			Renderer.shaderProgram = new ShaderProgram();
 			Renderer.shaderProgram.createVertexShader(Utils.loadResource("vertex.vs"));
 			Renderer.shaderProgram.createFragmentShader(Utils.loadResource("fragment.fs"));
 			Renderer.shaderProgram.link();
+			Renderer.shaderProgram.createUniform("projectionMatrix");
+			Renderer.shaderProgram.createUniform("worldMatrix");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		glfwSwapInterval(this.vsync);
 	}
 	
-	public void render(ObjectMesh mesh) {
+	public void render(Model[] models) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		Renderer.shaderProgram.bind();
-		glBindVertexArray(mesh.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glBindVertexArray(0);
+		Matrix4f projectionMatrix = this.transformation.getProjectionMatrix(Renderer.fieldOfView,Renderer.window.getWidth(), Renderer.window.getHeight(), Renderer.zNear, Renderer.zFar);
+		Renderer.shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+		for(Model m : models) {
+			Matrix4f worldMatrix = this.transformation.getWorldMatrix(m.getPosition(), m.getRotation(), m.getScale());
+			Renderer.shaderProgram.setUniform("worldMatrix", worldMatrix);
+			
+			glBindVertexArray(m.getMesh().getVaoID());
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+			glDrawElements(GL_TRIANGLES, m.getMesh().getVertexCount(), GL_UNSIGNED_INT, 0);
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+			glBindVertexArray(0);
+			
+		}
 		Renderer.shaderProgram.unbind();
 		glfwSwapBuffers(Renderer.window.getWindow());
 	}

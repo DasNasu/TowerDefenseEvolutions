@@ -89,4 +89,12 @@ public class GLWindow {
 	public long getWindow() {
 		return this.window;
 	}
+	
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
+	}
 }

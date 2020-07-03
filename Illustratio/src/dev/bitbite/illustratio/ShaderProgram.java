@@ -12,19 +12,30 @@ import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glDeleteProgram;
 import static org.lwjgl.opengl.GL20.glDetachShader;
 import static org.lwjgl.opengl.GL20.glGetProgrami;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
-import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryStack;
 
 public class ShaderProgram {
 	private int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
+	private Map<String, Integer> uniforms;
 	
 	public ShaderProgram() throws Exception {
+		this.uniforms = new HashMap<String, Integer>();
 		this.programID = glCreateProgram();
 		if(this.programID == 0) throw new Exception("Failed to create ShaderProgram");
 	}
@@ -54,6 +65,22 @@ public class ShaderProgram {
 		if(this.fragmentShaderID != 0) glDetachShader(this.programID, this.fragmentShaderID);
 		glValidateProgram(this.programID);
 		if(glGetProgrami(this.programID, GL_VALIDATE_STATUS) == 0) System.err.print("Warning on validating Shader");
+	}
+	
+	public void createUniform(String name) throws Exception {
+		int location = glGetUniformLocation(this.programID, name);
+		if(location < 0) throw new Exception("Could not find uniform "+name);
+		this.uniforms.put(name, location);
+	}
+	
+	public void setUniform(String name, Matrix4f matrix) {
+		try(MemoryStack stack = MemoryStack.stackPush()) {
+			FloatBuffer buffer = stack.mallocFloat(16);
+			matrix.get(buffer);
+			glUniformMatrix4fv(this.uniforms.get(name), false, buffer);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void bind() {
