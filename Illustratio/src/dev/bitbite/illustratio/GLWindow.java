@@ -21,6 +21,8 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -77,6 +79,7 @@ public class GLWindow {
 		glfwSetFramebufferSizeCallback(this.window, (window, width, height) -> {
 			System.out.println("new width: "+width+", new height: "+height);
 		});
+		glEnable(GL_DEPTH_TEST);
 	}
 	
 	public void terminateWindow() {

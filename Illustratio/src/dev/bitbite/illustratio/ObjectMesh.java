@@ -20,15 +20,19 @@ import java.nio.IntBuffer;
 import org.lwjgl.system.MemoryUtil;
 
 public class ObjectMesh {
+	private Texture texture;
 	private final int vaoID;
 	private final int vboID;
 	private final int indexVboID;
-	private final int colourVboID;
+	//private final int colorVboID;
+	private final int textureVboID;
 	private final int vertexCount;
 	
-	public ObjectMesh(float[] positions, float[] colours, int[] indices) {
+	public ObjectMesh(float[] positions, float[] textCoords, int[] indices, Texture texture) {
+		this.texture = texture;
 		FloatBuffer verticesBuffer = null;
 		FloatBuffer colourBuffer = null;
+		FloatBuffer textCoordsBuffer = null;
 		IntBuffer indicesBuffer = null;
 		try {
 			verticesBuffer = MemoryUtil.memAllocFloat(positions.length);
@@ -50,12 +54,21 @@ public class ObjectMesh {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.indexVboID);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 			
+			/*
 			this.colourVboID = glGenBuffers();
-			colourBuffer = MemoryUtil.memAllocFloat(colours.length);
-			colourBuffer.put(colours).flip();
-			glBindBuffer(GL_ARRAY_BUFFER, this.colourVboID);
+			colorBuffer = MemoryUtil.memAllocFloat(colours.length);
+			colorBuffer.put(colors).flip();
+			glBindBuffer(GL_ARRAY_BUFFER, this.colorVboID);
 			glBufferData(GL_ARRAY_BUFFER, colourBuffer, GL_STATIC_DRAW);
 			glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+			*/
+			
+			this.textureVboID = glGenBuffers();
+			textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
+			textCoordsBuffer.put(textCoords).flip();
+			glBindBuffer(GL_ARRAY_BUFFER, this.textureVboID);
+			glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
+			glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 			
 			glBindVertexArray(0);
 		} finally {
@@ -70,6 +83,8 @@ public class ObjectMesh {
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glDeleteBuffers(this.vboID);
+		//glDeleteBuffers(this.colorVboID);
+		glDeleteBuffers(this.textureVboID);
 		glDeleteBuffers(this.indexVboID);
 		
 		glBindVertexArray(0);
@@ -82,5 +97,9 @@ public class ObjectMesh {
 	
 	public int getVaoID() {
 		return this.vaoID;
+	}
+	
+	public Texture getTexture() {
+		return this.texture;
 	}
 }

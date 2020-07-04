@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
 import static org.lwjgl.opengl.GL20.glAttachShader;
 import static org.lwjgl.opengl.GL20.glCompileShader;
 import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glDeleteProgram;
 import static org.lwjgl.opengl.GL20.glDetachShader;
@@ -81,6 +82,10 @@ public class ShaderProgram {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setUniform(String name, int id) {
+		glUniform1i(this.uniforms.get(name), id);
 	}
 	
 	public void bind() {

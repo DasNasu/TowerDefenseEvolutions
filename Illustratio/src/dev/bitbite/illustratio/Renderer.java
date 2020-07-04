@@ -10,7 +10,11 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 import org.joml.Matrix4f;
 
@@ -38,6 +42,7 @@ public class Renderer {
 			Renderer.shaderProgram.link();
 			Renderer.shaderProgram.createUniform("projectionMatrix");
 			Renderer.shaderProgram.createUniform("worldMatrix");
+			Renderer.shaderProgram.createUniform("textureSampler");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -49,10 +54,13 @@ public class Renderer {
 		Renderer.shaderProgram.bind();
 		Matrix4f projectionMatrix = this.transformation.getProjectionMatrix(Renderer.fieldOfView,Renderer.window.getWidth(), Renderer.window.getHeight(), Renderer.zNear, Renderer.zFar);
 		Renderer.shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+		Renderer.shaderProgram.setUniform("textureSampler",  0);
 		for(Model m : models) {
 			Matrix4f worldMatrix = this.transformation.getWorldMatrix(m.getPosition(), m.getRotation(), m.getScale());
 			Renderer.shaderProgram.setUniform("worldMatrix", worldMatrix);
 			
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, Illustratio.model.getMesh().getTexture().getID());
 			glBindVertexArray(m.getMesh().getVaoID());
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
