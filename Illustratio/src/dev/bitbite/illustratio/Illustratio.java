@@ -20,61 +20,69 @@ public class Illustratio {
 		Illustratio.renderer = new Renderer(vsync, new GLWindow(width, height, windowTitle), 60f, 0.01f, 1000f);
 		Illustratio.inputHandler = new InputHandler();
 		Illustratio.model = new Model(new ObjectMesh(new float[] {
-			//top left front 0
-			-0.5f, 0.5f, 0.5f,
-			//bottom left front 1
-			-0.5f, -0.5f, 0.5f,
-			//bottom right front 2
-			0.5f, -0.5f, 0.5f,
-			//top right front 3
-			0.5f, 0.5f, 0.5f,
-			//top left back 4
-			-0.5f, 0.5f, -0.5f,
-			//bottom left back 5
-			-0.5f, -0.5f, -0.5f,
-			//bottom right back 6
-			0.5f, -0.5f, -0.5f,
-			//top right -back 7
-			0.5f, 0.5f, -0.5f
-		}, new float[] {
-			0.0f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            0.5f, 0.0f,
-            0.0f, 0.0f,
-            0.5f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            // For text coords in top face
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            0.0f, 1.0f,
-            0.5f, 1.0f,
-            // For text coords in right face
-            0.0f, 0.0f,
-            0.0f, 0.5f,
-            // For text coords in left face
-            0.5f, 0.0f,
-            0.5f, 0.5f,
-            // For text coords in bottom face
-            0.5f, 0.0f,
-            1.0f, 0.0f,
-            0.5f, 0.5f,
-            1.0f, 0.5f
-		}, new int[] {
-			//front
-			0, 1, 2, 2, 3, 0,
-			//left
-			0, 1, 5, 5, 4, 0,
-			//bottom
-			1, 2, 5, 5, 2, 6,
-			//right
-			3, 2, 6, 6, 7, 3,
-			//top
-			0, 3, 7, 7, 4, 0,
 			//back
-			4, 5, 6, 6, 7, 4
-		}, new Texture("cube_texture")));
+			-0.5f,0.5f,-0.5f,	
+			-0.5f,-0.5f,-0.5f,	
+			0.5f,-0.5f,-0.5f,	
+			0.5f,0.5f,-0.5f,
+			//front
+			-0.5f,0.5f,0.5f,	
+			-0.5f,-0.5f,0.5f,	
+			0.5f,-0.5f,0.5f,	
+			0.5f,0.5f,0.5f,
+			//right
+			0.5f,0.5f,-0.5f,	
+			0.5f,-0.5f,-0.5f,	
+			0.5f,-0.5f,0.5f,	
+			0.5f,0.5f,0.5f,
+			//left
+			-0.5f,0.5f,-0.5f,	
+			-0.5f,-0.5f,-0.5f,	
+			-0.5f,-0.5f,0.5f,	
+			-0.5f,0.5f,0.5f,
+			//top
+			-0.5f,0.5f,0.5f,
+			-0.5f,0.5f,-0.5f,
+			0.5f,0.5f,-0.5f,
+			0.5f,0.5f,0.5f,
+			//bottom
+			-0.5f, -0.5f, 0.5f,
+			-0.5f,-0.5f,-0.5f,
+			0.5f,-0.5f,-0.5f,
+			0.5f,-0.5f,0.5f
+		}, new float[] {
+			0,0,
+			0,1,
+			1,1,
+			1,0,			
+			0,0,
+			0,1,
+			1,1,
+			1,0,			
+			0,0,
+			0,1,
+			1,1,
+			1,0,
+			0,0,
+			0,1,
+			1,1,
+			1,0,
+			0,0,
+			0,1,
+			1,1,
+			1,0,
+			0,0,
+			0,1,
+			1,1,
+			1,0
+		}, new int[] {
+			3, 1, 0, 2, 1, 3,	
+			4,5,7,7,5,6,
+			11, 9, 8, 10, 9, 11,
+			12,13,15,15,13,14,	
+			19, 17, 16, 18, 17, 19,
+			20,21,23,23,21,22
+		}, new Texture("cube")));
 		this.run();
 	}
 	
@@ -85,10 +93,17 @@ public class Illustratio {
 		long window = Illustratio.renderer.getGLWindow().getWindow();
 		GL.createCapabilities();
 		glClearColor(0, 0, 0, 0);
+		Illustratio.model.setPosition(0, 0, -5);
+		long bounceCounter = 0;
+		boolean bounced = false;
 		float xRotation = Illustratio.model.getRotation().x;
 		float yRotation = Illustratio.model.getRotation().y;
 		float zRotation = Illustratio.model.getRotation().z;
-		Illustratio.model.setPosition(0, 0, -2);
+		float xPosition = Illustratio.model.getPosition().x;
+		float yPosition = Illustratio.model.getPosition().y;
+		float zPosition = Illustratio.model.getPosition().z;
+		float xMoveSpeed = 0.02f;
+		float yMoveSpeed = 0.02f;
 		while(!glfwWindowShouldClose(window)) {
 			now = System.nanoTime();
 			if((last+frameTime) <= now) {
@@ -106,13 +121,41 @@ public class Illustratio {
 				if(xRotation == 360) xRotation = 0;
 				if(yRotation == 360) yRotation = 0;
 				if(zRotation == 360) zRotation = 0;
-				xRotation += 0.5f;
-				yRotation += 0.5f;
-				zRotation += 0.5f;
+				if(xPosition >= 4) {
+					xMoveSpeed *= -1;
+					bounceCounter++;
+					bounced = true;
+					
+				}
+				if(xPosition <= -4) {
+					xMoveSpeed *= -1;
+					bounceCounter++;
+					bounced = true;
+				}
+				if(yPosition >= 2) {
+					yMoveSpeed *= -1;
+					bounceCounter++;
+					bounced = true;
+				}
+				if(yPosition <= -2) {
+					yMoveSpeed *= -1;
+					bounceCounter++;
+					bounced = true;
+				}
+				xRotation += 0.25f;
+				yRotation += 0.25f;
+				zRotation += 0.1f;
+				xPosition += xMoveSpeed;
+				yPosition += yMoveSpeed;
 				Illustratio.model.setRotation(xRotation, yRotation, zRotation);
+				Illustratio.model.setPosition(xPosition, yPosition, -5);
 				
 				Illustratio.renderer.render(new Model[] {Illustratio.model});
 				last = System.nanoTime();
+			}
+			if(bounced) {
+				System.out.println(bounceCounter);
+				bounced = false;
 			}
 			glfwPollEvents();
 		}

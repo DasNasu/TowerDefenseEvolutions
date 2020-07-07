@@ -15,6 +15,11 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glCullFace;
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 
 import org.joml.Matrix4f;
 
@@ -35,6 +40,7 @@ public class Renderer {
 		Renderer.zFar = zFar;
 		this.transformation = new Transformation();
 		Renderer.window.createWindow();
+		this.enableCulling();
 		try {
 			Renderer.shaderProgram = new ShaderProgram();
 			Renderer.shaderProgram.createVertexShader(Utils.loadResource("vertex.vs"));
@@ -72,6 +78,14 @@ public class Renderer {
 		}
 		Renderer.shaderProgram.unbind();
 		glfwSwapBuffers(Renderer.window.getWindow());
+	}
+	
+	public void enableCulling() {
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+	}
+	public void disableCulling() {
+		glDisable(GL_CULL_FACE);
 	}
 	
 	public ShaderProgram getShaderProgram() {
